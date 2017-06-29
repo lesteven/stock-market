@@ -4,10 +4,10 @@ var path = require('path');
 var CompressionPlugin = require("compression-webpack-plugin");
 
 module.exports = {
-  entry: {index:'./src/index.js'},
+  entry: {index:'./src/index.jsx'},
   output: {
     filename: '[name].js',
-    path: path.resolve(__dirname, 'public')
+    path: path.resolve(__dirname, 'dist')
   },
   devServer:{
     publicPath:'/',
