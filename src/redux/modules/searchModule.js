@@ -1,11 +1,10 @@
 var qs = require('querystring');
 //action
 
-export function searchStocks(term,data){
+export function searchStocks(term){
 	return{
 		type: 'TERM',
 		term,
-		data
 	}
 }
 
@@ -28,10 +27,10 @@ export function fetchData(term){
 }
 
 //reducer
-export const search = (state={term:'',data:''},action)=>{
+export const search = (state={term:''},action)=>{
 	switch (action.type){
 		case 'TERM':
-			return {term:action.term, data:action.data}
+			return {term:action.term}
 		default:
 			return state;
 	}
