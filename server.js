@@ -7,6 +7,17 @@ var port = process.env.PORT || 3000;
 var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({extended:false}));
 
+//database
+var mongoose = require('mongoose');
+mongoose.Promise = global.Promise;
+var url = process.env.MONGODB_URI || 'mongodb://localhost:27017/stockData'
+mongoose.connect(url);
+var db = mongoose.connection;
+db.on('error',console.error.bind(console,'connection error'));
+db.once('open',function(){
+	console.log('connected correctly to server');
+})
+
 //routers
 var searchRouter = require('./routes/searchRouter');
 

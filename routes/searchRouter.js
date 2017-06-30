@@ -2,7 +2,7 @@ var express = require('express');
 var searchRouter = express.Router();
 var axios =require('axios');
 var config = require('../config.js');
-
+var StockData = require('../models/stockData');
 
 searchRouter.post('/',function(req,res){
 	getStockData(req.body.term)
@@ -17,6 +17,19 @@ function getStartDate(){
 	var fullDate = year + '-'+ month + '-' + day
 	return fullDate;
 }
+
+function addStockToDb(data){
+	var stocks = ({
+		id: data.dataset_code,
+		name: data.name,
+		data: data.data
+	})
+
+	StockData.create(stocks,function(err,stock){
+		if(err) throw err;
+		console.log(stock)
+	})
+}
 function getStockData(company){
 	var url = 'https://www.quandl.com/api/v3/datasets/WIKI/';
 	url += company;
@@ -24,9 +37,9 @@ function getStockData(company){
 	url += '&api_key=' + config.KEY;
 
 	axios.get(url)
-	.then(response => console.log(
-		response.data.dataset.dataset_code,
-		//response.data.dataset.data
-		response))
+	.then(response => {
+		addStockToDb(response.data.dataset)
+		console.log(response.data.dataset.dataset_code)
+	})
 }
 module.exports = searchRouter;
