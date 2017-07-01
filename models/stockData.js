@@ -2,9 +2,11 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var StockData = new Schema({
-	id:{type:String,required:true},
+	_id:{type:String,required:true},
 	name:{type:String,required:true},
 	data:{type:[]}
+},{
+	_id:false
 })
 
 module.exports = mongoose.model('StockData',StockData)

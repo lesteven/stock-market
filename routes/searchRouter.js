@@ -4,11 +4,25 @@ var axios =require('axios');
 var config = require('../config.js');
 var StockData = require('../models/stockData');
 
-searchRouter.post('/',function(req,res){
+
+searchRouter.route('/')
+
+.get(function(req,res){
+	getData(res)
+})
+
+.post(function(req,res){
 	getStockData(req.body.term)
 	res.json(req.body)
 })
 
+function getData(res){
+	StockData.find({},function(err,stock){
+		if (err) throw err;
+		//console.log(stock)
+		res.json({data:stock})
+	})
+}
 function getStartDate(){
 	var date = new Date()
 	var day = String(date.getDate());
@@ -20,7 +34,7 @@ function getStartDate(){
 
 function addStockToDb(data){
 	var stocks = ({
-		id: data.dataset_code,
+		_id: data.dataset_code,
 		name: data.name,
 		data: data.data
 	})
