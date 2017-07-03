@@ -6,11 +6,12 @@ class Graph extends Component{
 		fetch('/search')
 		.then(response => response.json())
 		.then(data => {
-			console.log(data)
-			this.drawGraph()
+			//console.log(data.data[0].data)
+			let stockData = data.data[0].data;
+			this.drawGraph(stockData)
 		})
 	}
-	drawGraph(){
+	drawGraph(stockData){
 		//variable holding svg attributes
 		const margin ={top:50,bottom:50,left:50,right:50}
 		const width = 950;
@@ -29,9 +30,31 @@ class Graph extends Component{
 		let parseTime = d3.timeParse("%Y-%m-%d");
 
 		//set ranges
-		let x = d3.scaleTime().range([0,innerWidth]);
-		let y = d3.scaleLinear().range([innerHeight,0]);
-		console.log(x,y)
+		var dataArr = stockData.map(d=>({date:parseTime(d[0]),data:d[1]}) )
+		//console.log(dataArr)
+
+		let xScale = d3.scaleTime()
+			.range([0,innerWidth]);
+
+		let yScale = d3.scaleLinear()
+			.range([innerHeight,0]);
+
+		xScale.domain(d3.extent(dataArr,function(d){return d.date}))
+		yScale.domain(d3.extent(dataArr,function(d){return d.data}))
+		//console.log(yScale.domain(),xScale.domain())
+		
+		//define 1st line
+		let line = d3.line()
+			.x(function(d){return xScale(d.date);})
+			.y(function(d){return yScale(d.data);})
+		
+		//add line
+		svg.append('path')
+			.attr('d',line(dataArr))
+			.attr('fill','none')
+			.attr('class','line')
+			.attr('stroke','blue')
+
 	}
 	componentDidMount(){
 		this.getData()

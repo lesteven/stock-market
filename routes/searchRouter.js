@@ -48,6 +48,7 @@ function getStockData(company){
 	var url = 'https://www.quandl.com/api/v3/datasets/WIKI/';
 	url += company;
 	url += '.json?column_index=1&start_date=' + getStartDate();
+	//url += '&collapse=monthly';
 	url += '&api_key=' + config.KEY;
 
 	axios.get(url)
