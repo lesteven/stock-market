@@ -5,13 +5,11 @@ class Graph extends Component{
 	getData(){
 		fetch('/search')
 		.then(response => response.json())
-		.then(data => {
-			//console.log(data.data[0].data)
-			let stockData = data.data[0].data;
-			this.drawGraph(stockData)
+		.then(stocks => {
+			this.drawGraph(stocks)
 		})
 	}
-	drawGraph(stockData){
+	drawGraph(stocks){
 		//variable holding svg attributes
 		const margin ={top:50,bottom:50,left:50,right:50}
 		const width = 950;
@@ -30,31 +28,49 @@ class Graph extends Component{
 		let parseTime = d3.timeParse("%Y-%m-%d");
 
 		//set ranges
-		var dataArr = stockData.map(d=>({date:parseTime(d[0]),data:d[1]}) )
-		//console.log(dataArr)
-
 		let xScale = d3.scaleTime()
 			.range([0,innerWidth]);
 
 		let yScale = d3.scaleLinear()
 			.range([innerHeight,0]);
 
-		xScale.domain(d3.extent(dataArr,function(d){return d.date}))
-		yScale.domain(d3.extent(dataArr,function(d){return d.data}))
-		//console.log(yScale.domain(),xScale.domain())
+		//reformat data
+		let data = this.changeFormat(stocks.data,parseTime)
+		let combinedArr = this.getDomain(data)
+
+		//set domain
+		xScale.domain(d3.extent(combinedArr,function(d){return d.date}))
+		yScale.domain(d3.extent(combinedArr,function(d){return d.data}))
 		
-		//define 1st line
+		//define line
 		let line = d3.line()
 			.x(function(d){return xScale(d.date);})
 			.y(function(d){return yScale(d.data);})
-		
-		//add line
-		svg.append('path')
-			.attr('d',line(dataArr))
-			.attr('fill','none')
-			.attr('class','line')
-			.attr('stroke','blue')
 
+		//add lines
+		for(let i = 0; i < data.length;i++){
+			svg.append('path')
+				.attr('d',line(data[i]))
+				.attr('fill','none')
+				.attr('class','line')
+				.attr('stroke', stocks.data[i].color) 
+		}
+	}
+	changeFormat(stocks,parseTime){
+		let dataArr = [];
+		for(let i = 0; i < stocks.length; i++){
+			dataArr[i] = stocks[i].data.map(d=>({date:parseTime(d[0]),data:d[1]}) )
+		}
+		//console.log(dataArr)
+		return dataArr;
+	}
+	getDomain(dataArr){
+		let data =[]
+		for(let i = 0; i < dataArr.length;i++){
+			data.push(...dataArr[i])
+		}
+		//console.log(data)
+		return data;
 	}
 	componentDidMount(){
 		this.getData()

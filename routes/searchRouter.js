@@ -31,12 +31,20 @@ function getStartDate(){
 	var fullDate = year + '-'+ month + '-' + day
 	return fullDate;
 }
-
+function genColor(){
+	  let letters = '0123456789abcdef';
+	  let color = '#';
+	  for(let i = 0; i <6; i++){
+	    color += letters[Math.floor(Math.random()*letters.length)]
+	  }
+	  return color; 
+	}
 function addStockToDb(data){
 	var stocks = ({
 		_id: data.dataset_code,
 		name: data.name,
-		data: data.data
+		data: data.data,
+		color: genColor()
 	})
 
 	StockData.create(stocks,function(err,stock){
