@@ -18,14 +18,16 @@ class Graph extends Component{
 		const innerWidth = width - margin.left - margin.right;
 
 		//creates svg
-		let svg = d3.select("#graph")
-			.append("svg")
-			.attr("width",width)
-			.attr("height",height)
-			.attr("class","graph")
+		let svg = d3.select('#graph')
+			.append('svg')
+			.attr('width',width)
+			.attr('height',height)
+			.attr('class','graph')
+			.append('g').attr('transform','translate('
+				+ margin.left + ',' + margin.top + ')');
 
 		//parse date for x-axis
-		let parseTime = d3.timeParse("%Y-%m-%d");
+		let parseTime = d3.timeParse('%Y-%m-%d');
 
 		//set ranges
 		let xScale = d3.scaleTime()
@@ -36,7 +38,7 @@ class Graph extends Component{
 
 		//reformat data
 		let data = this.changeFormat(stocks.data,parseTime)
-		let combinedArr = this.getDomain(data)
+		let combinedArr = this.combineArrays(data)
 
 		//set domain
 		xScale.domain(d3.extent(combinedArr,function(d){return d.date}))
@@ -55,6 +57,17 @@ class Graph extends Component{
 				.attr('class','line')
 				.attr('stroke', stocks.data[i].color) 
 		}
+
+		//add x and y axis
+		svg.append('g')
+			.attr('class','x-axis')
+			.attr('transform','translate(0,'+ innerHeight +')')
+			.call(d3.axisBottom(xScale));
+
+		svg.append('g')
+			.attr('class','x-axis')
+			.call(d3.axisLeft(yScale));
+
 	}
 	changeFormat(stocks,parseTime){
 		let dataArr = [];
@@ -64,7 +77,7 @@ class Graph extends Component{
 		//console.log(dataArr)
 		return dataArr;
 	}
-	getDomain(dataArr){
+	combineArrays(dataArr){
 		let data =[]
 		for(let i = 0; i < dataArr.length;i++){
 			data.push(...dataArr[i])
