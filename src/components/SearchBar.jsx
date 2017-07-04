@@ -32,8 +32,7 @@ class SearchBar extends Component{
 
 const mapStateToProps =(state)=>{
 	return{
-		search: state.term,
-		data: state.data
+		search: state.term
 	}
 }
 const mapDispatchToProps = (dispatch)=>{

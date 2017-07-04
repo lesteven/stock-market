@@ -1,7 +1,15 @@
 body{
 	text-align: center;
 }
-svg{
+form{
+	margin:1%;
+}
+.stock{
 	border-style: solid;
 	border-color: black;
+	margin:.5%;
+	padding:.5%;
+}
+.stocksList{
+	display:flex;
 }

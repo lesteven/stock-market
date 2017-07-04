@@ -4,6 +4,7 @@ import SearchBar from './components/SearchBar.jsx';
 import {Provider} from 'react-redux';
 import configureStore from './redux/store';
 import Graph from './components/graph.jsx';
+import StocksList from './components/stocksList.jsx';
 
 class Index extends Component{
 	render(){
@@ -12,6 +13,7 @@ class Index extends Component{
 			<div>
 				<Graph />
 				<SearchBar />
+				<StocksList />
 			</div>
 		)
 	}

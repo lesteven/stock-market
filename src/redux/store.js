@@ -1,9 +1,11 @@
 import {createStore, applyMiddleware, combineReducers,compose} from 'redux';
 import thunk from 'redux-thunk';
 import search from './modules/searchModule';
+import data from './modules/stocksModule';
 
 const reducers = combineReducers({
-	search
+	search,
+	data
 })
 
 export default function configureStore(initialState){
