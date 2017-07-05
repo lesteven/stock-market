@@ -1,13 +1,10 @@
 import React, {Component} from 'react';
+import { connect } from 'react-redux';
 import * as d3 from 'd3';
 
 class Graph extends Component{
-	getData(){
-		fetch('/search')
-		.then(response => response.json())
-		.then(stocks => {
-			this.drawGraph(stocks)
-		})
+	constructor(props){
+		super(props);
 	}
 	drawGraph(stocks){
 		//variable holding svg attributes
@@ -37,7 +34,7 @@ class Graph extends Component{
 			.range([innerHeight,0]);
 
 		//reformat data
-		let data = this.changeFormat(stocks.data,parseTime)
+		let data = this.changeFormat(stocks,parseTime)
 		let combinedArr = this.combineArrays(data)
 
 		//set domain
@@ -55,7 +52,7 @@ class Graph extends Component{
 				.attr('d',line(data[i]))
 				.attr('fill','none')
 				.attr('class','line')
-				.attr('stroke', stocks.data[i].color) 
+				.attr('stroke', stocks[i].color) 
 				.attr('stroke-width','2px')
 		}
 
@@ -86,10 +83,9 @@ class Graph extends Component{
 		//console.log(data)
 		return data;
 	}
-	componentDidMount(){
-		this.getData()
-	}
+	
 	render(){
+		this.props.data?this.drawGraph(this.props.data):null;
 		return(
 			<div id='graph'>
 			</div>
@@ -97,4 +93,10 @@ class Graph extends Component{
 	}
 }
 
-export default Graph;
+const mapStateToProps =(state)=>{
+	return{
+		data:state.data
+	}
+}
+
+export default connect(mapStateToProps)(Graph);
