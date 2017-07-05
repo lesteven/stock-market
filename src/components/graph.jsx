@@ -56,6 +56,7 @@ class Graph extends Component{
 				.attr('fill','none')
 				.attr('class','line')
 				.attr('stroke', stocks.data[i].color) 
+				.attr('stroke-width','2px')
 		}
 
 		//add x and y axis

@@ -16,6 +16,10 @@ searchRouter.route('/')
 	res.json(req.body)
 })
 
+.delete(function(req,res){
+	deleteStock(req,res)
+})
+
 function getData(res){
 	StockData.find({},function(err,stock){
 		if (err) throw err;
@@ -63,6 +67,12 @@ function getStockData(company){
 	.then(response => {
 		addStockToDb(response.data.dataset)
 		console.log(response.data.dataset.dataset_code)
+	})
+}
+function deleteStock(req,res){
+	StockData.findByIdAndRemove({_id:req.body._id},function(err,stock){
+		if(err) throw err;
+		res.json({'status':'success'})
 	})
 }
 module.exports = searchRouter;

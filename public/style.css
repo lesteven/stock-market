@@ -1,15 +1,29 @@
-body{
-	text-align: center;
-}
 form{
 	margin:1%;
+	text-align: center;
+}
+#graph{
+	text-align:center;
 }
 .stock{
 	border-style: solid;
 	border-color: black;
 	margin:.5%;
 	padding:.5%;
+	width:30%;
 }
 .stocksList{
 	display:flex;
+	flex-wrap: wrap;
+}
+.header{
+	
+}
+.title{
+	display:inline;
+}
+.remove{
+	display:inline;
+	float:left;
+	margin-right:25%;
 }
