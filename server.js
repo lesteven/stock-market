@@ -32,7 +32,28 @@ app.use('/',express.static(__dirname + '/public'));
 
 app.use('/search', searchRouter);
 
+/*
 app.listen(port,function(){
 	console.log(`Listening on port ${port}`)
 })
+*/
 
+//ws
+var WebSocket = require('ws');
+var http = require('http');
+var server = http.createServer(app);
+var wss = new WebSocket.Server({server});
+
+wss.on('connection',function connection(ws,req){
+
+	console.log('Client connected');
+	ws.on('message', function incoming(message) {
+    console.log('received: %s', message);
+  	});
+  	ws.on('close', () => console.log('Client disconnected'));
+  	ws.send('something');
+})
+
+server.listen(port,function listening(){
+	console.log('Listening on %d',server.address().port)
+})

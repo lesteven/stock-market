@@ -8,11 +8,11 @@ var StockData = require('../models/stockData');
 searchRouter.route('/')
 
 .get(function(req,res){
-	getData(res)
+	getDB(res)
 })
 
 .post(function(req,res){
-	getStockData(req.body.term)
+	getAPIdata(req.body.term)
 	res.json(req.body)
 })
 
@@ -20,7 +20,7 @@ searchRouter.route('/')
 	deleteStock(req,res)
 })
 
-function getData(res){
+function getDB(res){
 	StockData.find({},function(err,stock){
 		if (err) throw err;
 		//console.log(stock)
@@ -53,10 +53,10 @@ function addStockToDb(data){
 
 	StockData.create(stocks,function(err,stock){
 		if(err) throw err;
-		console.log(stock)
+		console.log(stock._id)
 	})
 }
-function getStockData(company){
+function getAPIdata(company){
 	var url = 'https://www.quandl.com/api/v3/datasets/WIKI/';
 	url += company;
 	url += '.json?column_index=1&start_date=' + getStartDate();
@@ -66,7 +66,7 @@ function getStockData(company){
 	axios.get(url)
 	.then(response => {
 		addStockToDb(response.data.dataset)
-		console.log(response.data.dataset.dataset_code)
+		//console.log(response.data.dataset.dataset_code)
 	})
 }
 function deleteStock(req,res){

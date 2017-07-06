@@ -18,6 +18,15 @@ class SearchBar extends Component{
 		e.preventDefault();
 		this.props.search(this.state.searchTerm)
 	}
+	componentDidMount(){
+		var HOST = location.origin.replace(/^http/,'ws')
+		console.log(HOST);
+		var ws = new WebSocket('ws://localhost:3000/');
+		ws.onopen = function(){
+			ws.send('Connection established.')
+
+		}
+	}
 	render(){
 		return(
 			<form onSubmit={this.search}>
