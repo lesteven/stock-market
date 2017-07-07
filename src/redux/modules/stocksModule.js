@@ -8,6 +8,7 @@ export function getStocks(stocks){
 
 export function fetchDB(){
 	return(dispatch)=>{
+		
 		fetch('/search')
 		.then(response => response.json())
 		.then(data =>{

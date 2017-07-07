@@ -1,10 +1,16 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
+import {getStocks,fetchDB} from '../redux/modules/stocksModule';
 import * as d3 from 'd3';
+var ws = require('../wsClient');
+
 
 class Graph extends Component{
 	constructor(props){
 		super(props);
+		this.state={
+
+		}
 	}
 	drawGraph(stocks){
 		//variable holding svg attributes
@@ -85,6 +91,17 @@ class Graph extends Component{
 		//console.log(data)
 		return data;
 	}
+	componentDidMount(){
+		this.props.getDB()
+		ws.onopen = function(){
+			ws.send('Connection established.')
+		}
+		ws.onmessage = function(msg){
+			let stocks = JSON.parse(msg.data)
+			console.log(stocks,'graph.jsx')
+			this.props.getStocks(stocks)
+		}.bind(this)
+	}
 	componentWillReceiveProps(props){
 		this.drawGraph(props.data)
 	}
@@ -102,5 +119,11 @@ const mapStateToProps =(state)=>{
 		data:state.data
 	}
 }
+const mapDispatchToProps =(dispatch)=>{
+	return{
+		getStocks:(stocks)=>dispatch(getStocks(stocks)),
+		getDB:()=>dispatch(fetchDB())
+	}
+}
 
-export default connect(mapStateToProps)(Graph);
+export default connect(mapStateToProps,mapDispatchToProps)(Graph);

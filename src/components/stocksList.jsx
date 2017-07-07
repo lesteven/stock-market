@@ -1,14 +1,10 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
-import {fetchDB} from '../redux/modules/stocksModule';
 import Stocks from './stocks.jsx';
 
 class StocksList extends Component{
 	constructor(props){
 		super(props);
-	}
-	componentDidMount(){
-		this.props.getDB()
 	}
 	render(){
 		let list;
@@ -35,10 +31,6 @@ const mapStateToProps =(state)=>{
 		data:state.data
 	}
 }
-const mapDispatchToProps =(dispatch)=>{
-	return{
-		getDB:()=>dispatch(fetchDB())
-	}
-}
 
-export default connect(mapStateToProps,mapDispatchToProps)(StocksList);
+
+export default connect(mapStateToProps)(StocksList);

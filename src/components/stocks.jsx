@@ -8,23 +8,9 @@ class Stocks extends Component{
 		super(props);
 	}
 	deleteStock(id){
-		let formData ={
-			_id:id
-		}
-		fetch('/search',{
-			credentials:'same-origin',
-			method:'DELETE',
-			headers: {'Content-Type':'application/x-www-form-urlencoded'}, 
-			body:qs.stringify(formData)
-		})
-		.then(()=>{
-			ws.send('Delete stock')
-		})
+		ws.send('Delete ' + id);
 	}
 	render(){
-		ws.onmessage = function(msg){
-			console.log(JSON.parse(msg.data))
-		}
 		return(
 			<div className='stock'>
 				<span className='header'>
