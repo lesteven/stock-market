@@ -45,6 +45,7 @@ var server = http.createServer(app);
 var wss = new WebSocket.Server({server});
 var module = require('./routes/wsRouter');
 
+
 wss.on('connection',function connection(ws,req){
 
   //module.getDB(ws)
@@ -55,13 +56,13 @@ wss.on('connection',function connection(ws,req){
         console.log('will %s',message)
         var regex = /\s\w*/;
         var stock = message.match(regex)[0].substr(1);
-        module.getAPIdata(stock,ws)
+        module.getAPIdata(stock,ws,wss)
       }
       else if(message.match(/Delete/) !== null){
         console.log('will %s',message)
         var regex = /\s\w*/;
         var stock = message.match(regex)[0].substr(1);
-        module.deleteStock(stock,ws)
+        module.deleteStock(stock,ws,wss)
       }
       else{
         console.log('received: %s', message);

@@ -8,9 +8,6 @@ var ws = require('../wsClient');
 class Graph extends Component{
 	constructor(props){
 		super(props);
-		this.state={
-
-		}
 	}
 	drawGraph(stocks){
 		//variable holding svg attributes

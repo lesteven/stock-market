@@ -1,11 +1,17 @@
 var axios =require('axios');
 var config = require('../config.js');
 var StockData = require('../models/stockData');
+var WebSocket = require('ws');
 
-exports.getDB =(ws)=>{
+exports.getDB =(ws,wss)=>{
 	StockData.find({},function(err,stock){
 		if (err) throw err;
-		ws.send(JSON.stringify(stock))
+		//ws.send(JSON.stringify(stock))
+		wss.clients.forEach(function each(client) {
+	      if (client.readyState === WebSocket.OPEN) {
+	        client.send(JSON.stringify(stock));
+	      }
+   	 	});
 	})
 }
 function getStartDate(){
@@ -24,7 +30,7 @@ function genColor(){
 	  }
 	  return color; 
 	}
-function addStockToDb(data,ws){
+function addStockToDb(data,ws,wss){
 	var stocks = ({
 		_id: data.dataset_code,
 		name: data.name,
@@ -35,10 +41,10 @@ function addStockToDb(data,ws){
 	StockData.create(stocks,function(err,stock){
 		if(err) throw err;
 		console.log(stock._id)
-		exports.getDB(ws)
+		exports.getDB(ws,wss)
 	})
 }
-exports.getAPIdata =(stock,ws)=>{
+exports.getAPIdata =(stock,ws,wss)=>{
 	var url = 'https://www.quandl.com/api/v3/datasets/WIKI/';
 	url += stock
 	url += '.json?column_index=1&start_date=' + getStartDate();
@@ -47,13 +53,13 @@ exports.getAPIdata =(stock,ws)=>{
 
 	axios.get(url)
 	.then(response => {
-		addStockToDb(response.data.dataset,ws)
+		addStockToDb(response.data.dataset,ws,wss)
 		//console.log(response.data.dataset.dataset_code)
 	})
 }
-exports.deleteStock=(stock,ws)=>{
+exports.deleteStock=(stock,ws,wss)=>{
 	StockData.findByIdAndRemove({_id:stock},function(err,stock){
 		if(err) throw err;
-		exports.getDB(ws)
+		exports.getDB(ws,wss)
 	})
 }
