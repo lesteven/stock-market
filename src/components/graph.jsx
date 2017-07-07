@@ -14,9 +14,11 @@ class Graph extends Component{
 		const innerHeight = height - margin.top - margin.bottom;
 		const innerWidth = width - margin.left - margin.right;
 
+		d3.selectAll("svg > *").remove();
+
 		//creates svg
-		let svg = d3.select('#graph')
-			.append('svg')
+		let svg = d3.select('svg')
+			//.append('svg')
 			.attr('width',width)
 			.attr('height',height)
 			.attr('class','graph')
@@ -83,11 +85,13 @@ class Graph extends Component{
 		//console.log(data)
 		return data;
 	}
-	
+	componentWillReceiveProps(props){
+		this.drawGraph(props.data)
+	}
 	render(){
-		this.props.data?this.drawGraph(this.props.data):null;
 		return(
 			<div id='graph'>
+			<svg></svg>
 			</div>
 		)
 	}

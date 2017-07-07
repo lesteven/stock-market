@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
 var qs = require('querystring');
+var ws = require('../wsClient');
+
 
 class Stocks extends Component{
 	constructor(props){
@@ -15,8 +17,14 @@ class Stocks extends Component{
 			headers: {'Content-Type':'application/x-www-form-urlencoded'}, 
 			body:qs.stringify(formData)
 		})
+		.then(()=>{
+			ws.send('Delete stock')
+		})
 	}
 	render(){
+		ws.onmessage = function(msg){
+			console.log(JSON.parse(msg.data))
+		}
 		return(
 			<div className='stock'>
 				<span className='header'>

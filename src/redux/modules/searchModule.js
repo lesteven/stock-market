@@ -1,3 +1,4 @@
+import {fetchDB} from './stocksModule';
 var qs = require('querystring');
 //action
 
@@ -8,7 +9,7 @@ export function searchStocks(term){
 	}
 }
 
-export function fetchData(term){
+export function fetchData(term,ws){
 	return (dispatch)=>{
 		var formData ={
 			term:term
@@ -20,8 +21,10 @@ export function fetchData(term){
 		})
 		.then(response => response.json())
 		.then(data => {
-			console.log(data)
+			//console.log(data)
 			dispatch(searchStocks(term))
+			dispatch(fetchDB())
+			ws.send('Add to DB')
 		})
 	}
 }

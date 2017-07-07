@@ -43,16 +43,38 @@ var WebSocket = require('ws');
 var http = require('http');
 var server = http.createServer(app);
 var wss = new WebSocket.Server({server});
+var StockData = require('./models/stockData');
 
 wss.on('connection',function connection(ws,req){
 
 	console.log('Client connected');
 	ws.on('message', function incoming(message) {
-    console.log('received: %s', message);
+    	//console.log('received: %s', message);
+    	switch(message){
+    		case 'Add to DB':
+          console.log('received: %s', message);
+    			//ws.send('Add,will update')
+    			getDB(ws)
+    			break;
+    		case 'Delete stock':
+    			//ws.send('delete, will update')
+    			getDB(ws)
+    			break;
+    		default:
+    			console.log('received: %s', message);
+    	}
   	});
+
   	ws.on('close', () => console.log('Client disconnected'));
-  	ws.send('something');
+  	//ws.send('hello client!');
 })
+
+function getDB(ws){
+	StockData.find({},function(err,stock){
+		if (err) throw err;
+		ws.send(JSON.stringify(stock))
+	})
+}
 
 server.listen(port,function listening(){
 	console.log('Listening on %d',server.address().port)

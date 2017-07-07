@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import {fetchData} from '../redux/modules/searchModule';
+var ws = require('../wsClient');
+
 
 class SearchBar extends Component{
 	constructor(props){
@@ -16,18 +18,18 @@ class SearchBar extends Component{
 	}
 	search(e){
 		e.preventDefault();
-		this.props.search(this.state.searchTerm)
+		this.props.search(this.state.searchTerm,ws)
+		//ws.send('Add to DB')
 	}
 	componentDidMount(){
-		var HOST = location.origin.replace(/^http/,'ws')
-		console.log(HOST);
-		var ws = new WebSocket('ws://localhost:3000/');
 		ws.onopen = function(){
 			ws.send('Connection established.')
-
 		}
 	}
 	render(){
+		ws.onmessage = function(msg){
+			console.log(JSON.parse(msg.data))
+		}
 		return(
 			<form onSubmit={this.search}>
 				<input type='text' name='searchTerm' 
@@ -46,7 +48,7 @@ const mapStateToProps =(state)=>{
 }
 const mapDispatchToProps = (dispatch)=>{
 	return{
-		search:(term) => dispatch(fetchData(term))
+		search:(term,ws) => dispatch(fetchData(term,ws))
 	}
 }
 export default connect(mapStateToProps,mapDispatchToProps)(SearchBar)

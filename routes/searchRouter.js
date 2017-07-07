@@ -12,8 +12,7 @@ searchRouter.route('/')
 })
 
 .post(function(req,res){
-	getAPIdata(req.body.term)
-	res.json(req.body)
+	getAPIdata(req,res)
 })
 
 .delete(function(req,res){
@@ -43,7 +42,7 @@ function genColor(){
 	  }
 	  return color; 
 	}
-function addStockToDb(data){
+function addStockToDb(data,req,res){
 	var stocks = ({
 		_id: data.dataset_code,
 		name: data.name,
@@ -54,18 +53,19 @@ function addStockToDb(data){
 	StockData.create(stocks,function(err,stock){
 		if(err) throw err;
 		console.log(stock._id)
+		res.json(req.body)
 	})
 }
-function getAPIdata(company){
+function getAPIdata(req,res){
 	var url = 'https://www.quandl.com/api/v3/datasets/WIKI/';
-	url += company;
+	url += req.body.term;
 	url += '.json?column_index=1&start_date=' + getStartDate();
 	//url += '&collapse=monthly';
 	url += '&api_key=' + config.KEY;
 
 	axios.get(url)
 	.then(response => {
-		addStockToDb(response.data.dataset)
+		addStockToDb(response.data.dataset,req,res)
 		//console.log(response.data.dataset.dataset_code)
 	})
 }
