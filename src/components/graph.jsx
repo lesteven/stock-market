@@ -2,7 +2,17 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import {getStocks,fetchDB} from '../redux/modules/stocksModule';
 import {gotError,noError} from '../redux/modules/errorModule';
-import * as d3 from 'd3';
+//import * as d3 from 'd3';
+import {
+	selectAll,
+	select,
+	selection} from 'd3-selection';
+import {timeParse} from 'd3-time-format';
+import {scaleTime,scaleLinear} from 'd3-scale';
+import {range,extent} from 'd3-array';
+import {line} from 'd3-shape';
+import {axisBottom,axisLeft} from 'd3-axis';
+
 var ws = require('../wsClient');
 
 
@@ -19,10 +29,10 @@ class Graph extends Component{
 		const innerHeight = height - margin.top - margin.bottom;
 		const innerWidth = width - margin.left - margin.right;
 
-		d3.selectAll("svg > *").remove();
+		selectAll("svg > *").remove();
 
 		//creates svg
-		let svg = d3.select('svg')
+		let svg = select('svg')
 			//.append('svg')
 			.attr('width',width)
 			.attr('height',height)
@@ -31,13 +41,13 @@ class Graph extends Component{
 				+ margin.left + ',' + margin.top + ')');
 
 		//parse date for x-axis
-		let parseTime = d3.timeParse('%Y-%m-%d');
+		let parseTime = timeParse('%Y-%m-%d');
 
 		//set ranges
-		let xScale = d3.scaleTime()
+		let xScale = scaleTime()
 			.range([0,innerWidth]);
 
-		let yScale = d3.scaleLinear()
+		let yScale = scaleLinear()
 			.range([innerHeight,0]);
 
 		//reformat data
@@ -45,18 +55,18 @@ class Graph extends Component{
 		let combinedArr = this.combineArrays(data)
 
 		//set domain
-		xScale.domain(d3.extent(combinedArr,function(d){return d.date}))
-		yScale.domain(d3.extent(combinedArr,function(d){return d.data}))
+		xScale.domain(extent(combinedArr,function(d){return d.date}))
+		yScale.domain(extent(combinedArr,function(d){return d.data}))
 		
 		//define line
-		let line = d3.line()
+		let lineChart = line()
 			.x(function(d){return xScale(d.date);})
 			.y(function(d){return yScale(d.data);})
 
 		//add lines
 		for(let i = 0; i < data.length;i++){
 			svg.append('path')
-				.attr('d',line(data[i]))
+				.attr('d',lineChart(data[i]))
 				.attr('fill','none')
 				.attr('class','line')
 				.attr('stroke', stocks[i].color) 
@@ -67,11 +77,11 @@ class Graph extends Component{
 		svg.append('g')
 			.attr('class','x-axis')
 			.attr('transform','translate(0,'+ innerHeight +')')
-			.call(d3.axisBottom(xScale));
+			.call(axisBottom(xScale));
 
 		svg.append('g')
 			.attr('class','x-axis')
-			.call(d3.axisLeft(yScale));
+			.call(axisLeft(yScale));
 
 	}
 	changeFormat(stocks,parseTime){
