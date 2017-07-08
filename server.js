@@ -45,8 +45,14 @@ var server = http.createServer(app);
 var wss = new WebSocket.Server({server});
 var module = require('./controller/wsFunctions');
 
+function heartbeat() {
+    this.isAlive = true;
+  }
 
 wss.on('connection',function connection(ws,req){
+
+    ws.isAlive = true;
+    ws.on('pong', heartbeat);
 
   //module.getDB(ws)
 	console.log('Client connected');
@@ -73,6 +79,14 @@ wss.on('connection',function connection(ws,req){
   	//ws.send('hello client!');
 })
 
+const interval = setInterval(function ping() {
+    wss.clients.forEach(function each(ws) {
+      if (ws.isAlive === false) return ws.terminate();
+
+      ws.isAlive = false;
+      ws.ping('', false, true);
+    });
+  }, 30000);
 
 server.listen(port,function listening(){
 	console.log('Listening on %d',server.address().port)
