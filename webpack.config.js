@@ -30,7 +30,7 @@ module.exports = {
     query:{presets:['react','es2015']}
 	}
   ]
-}/*,
+},
   plugins: [
 new webpack.DefinePlugin({
       'process.env.NODE_ENV': '"production"'
@@ -57,5 +57,5 @@ new webpack.DefinePlugin({
       threshold: 10240,
       minRatio: 0.8
     })
-  ]*/
+  ]
 };

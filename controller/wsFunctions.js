@@ -1,5 +1,5 @@
 var axios =require('axios');
-var config = require('../config.js');
+//var config = require('../config.js');
 var StockData = require('../models/stockData');
 var WebSocket = require('ws');
 
@@ -52,7 +52,7 @@ exports.getAPIdata =(stock,ws,wss)=>{
 	url += stock
 	url += '.json?column_index=1&start_date=' + getStartDate();
 	//url += '&collapse=monthly';
-	url += '&api_key=' + (process.env.QUANDL_KEY||config.KEY);
+	url += '&api_key=' + (process.env.QUANDL_KEY/*||config.KEY*/);
 
 	axios.get(url)
 	.then(response => {
