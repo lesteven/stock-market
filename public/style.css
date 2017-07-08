@@ -27,3 +27,8 @@ form{
 	float:left;
 	margin-right:25%;
 }
+.error{
+	text-align: center;
+	color:red;
+	cursor:pointer;
+}

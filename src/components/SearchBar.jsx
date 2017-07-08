@@ -1,4 +1,6 @@
 import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import {noError} from '../redux/modules/errorModule';
 var ws = require('../wsClient');
 
 
@@ -19,18 +21,36 @@ class SearchBar extends Component{
 		ws.send('Add ' + this.state.searchTerm)
 		this.setState({searchTerm:''})
 	}
-	render(){
-	
+	errorMessage(){
 		return(
-			<form onSubmit={this.addToGraph}>
-				<input type='text' name='searchTerm' 
-				placeholder='Search Here!' value={this.state.searchTerm}
-				onChange={this.handleChange}/>
-				<input type='submit' value='Search'/>
-			</form>
+			<p className='error' onClick={()=>this.props.noError('')}>
+				Error! Please enter correct stock symbol
+			</p>
+		)
+	}
+	render(){
+		return(
+			<div>
+			{this.props.err?this.errorMessage():null}
+				<form onSubmit={this.addToGraph}>
+					<input type='text' name='searchTerm' autoComplete='off'
+					placeholder='Search Here!' value={this.state.searchTerm}
+					onChange={this.handleChange}/>
+					<input type='submit' value='Search'/>
+				</form>
+			</div>
 		)
 	}
 }
 
-
-export default SearchBar
+const mapStateToProps=(state)=>{
+	return{
+		err:state.err
+	}
+}
+const mapDispatchToProps =(dispatch)=>{
+	return{
+		noError:(error)=>dispatch(noError(error))
+	}
+}
+export default connect(mapStateToProps,mapDispatchToProps)(SearchBar);

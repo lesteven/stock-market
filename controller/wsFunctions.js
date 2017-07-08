@@ -39,7 +39,10 @@ function addStockToDb(data,ws,wss){
 	})
 
 	StockData.create(stocks,function(err,stock){
-		if(err) throw err;
+		if(err){
+			console.log(err.errmsg)
+			return
+		}
 		console.log(stock._id)
 		exports.getDB(ws,wss)
 	})
@@ -49,12 +52,16 @@ exports.getAPIdata =(stock,ws,wss)=>{
 	url += stock
 	url += '.json?column_index=1&start_date=' + getStartDate();
 	//url += '&collapse=monthly';
-	url += '&api_key=' + config.KEY;
+	url += '&api_key=' + (process.env.QUANDL_KEY||config.KEY);
 
 	axios.get(url)
 	.then(response => {
 		addStockToDb(response.data.dataset,ws,wss)
 		//console.log(response.data.dataset.dataset_code)
+	})
+	.catch(function(error){
+		console.log(error.response.data);
+		ws.send('Error')
 	})
 }
 exports.deleteStock=(stock,ws,wss)=>{

@@ -43,7 +43,7 @@ var WebSocket = require('ws');
 var http = require('http');
 var server = http.createServer(app);
 var wss = new WebSocket.Server({server});
-var module = require('./routes/wsRouter');
+var module = require('./controller/wsFunctions');
 
 
 wss.on('connection',function connection(ws,req){

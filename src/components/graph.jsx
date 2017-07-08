@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import {getStocks,fetchDB} from '../redux/modules/stocksModule';
+import {gotError,noError} from '../redux/modules/errorModule';
 import * as d3 from 'd3';
 var ws = require('../wsClient');
 
@@ -8,6 +9,7 @@ var ws = require('../wsClient');
 class Graph extends Component{
 	constructor(props){
 		super(props);
+		this.state={}
 	}
 	drawGraph(stocks){
 		//variable holding svg attributes
@@ -94,9 +96,15 @@ class Graph extends Component{
 			ws.send('Connection established.')
 		}
 		ws.onmessage = function(msg){
-			let stocks = JSON.parse(msg.data)
-			console.log(stocks,'graph.jsx')
-			this.props.getStocks(stocks)
+			if(msg.data === 'Error'){
+				this.props.gotError(msg.data)
+			}
+			else{
+				let stocks = JSON.parse(msg.data)
+				//console.log(stocks,'graph.jsx')
+				this.props.noError('')
+				this.props.getStocks(stocks)
+			}
 		}.bind(this)
 	}
 	componentWillReceiveProps(props){
@@ -119,7 +127,9 @@ const mapStateToProps =(state)=>{
 const mapDispatchToProps =(dispatch)=>{
 	return{
 		getStocks:(stocks)=>dispatch(getStocks(stocks)),
-		getDB:()=>dispatch(fetchDB())
+		getDB:()=>dispatch(fetchDB()),
+		gotError:(error)=>dispatch(gotError(error)),
+		noError:(error)=>dispatch(noError(error))
 	}
 }
 

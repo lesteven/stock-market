@@ -1,7 +1,5 @@
 var express = require('express');
 var searchRouter = express.Router();
-var axios =require('axios');
-var config = require('../config.js');
 var StockData = require('../models/stockData');
 
 
